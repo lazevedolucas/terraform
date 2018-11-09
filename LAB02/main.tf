@@ -9,6 +9,7 @@ resource "aws_vpc" "vpc_modelo" {
   enable_dns_hostnames = true
   tags {
     name = "vpc_modelo"
+    Owner = "lucas.azevedo"
   }
 }
 
@@ -16,6 +17,7 @@ resource "aws_internet_gateway" "default" {
   vpc_id = "${aws_vpc.vpc_modelo.id}"
   tags  {
     name = "vpc_modelo"
+    Owner = "lucas.azevedo"
   }
 }
 
@@ -23,10 +25,11 @@ resource "aws_route_table" "subnet_pub1" {
   vpc_id  = "${aws_vpc.vpc_modelo.id}"
     route {
       cidr_block = "0.0.0.0/0"
-      gateway_id  = "${aws_internet_gateway.vpc_modelo.id}"
+      gateway_id  = "${aws_internet_gateway.default.id}"
     }
     tags {
       name = "vpc_modelo"
+      Owner = "lucas.azevedo"
   }
 }
 
@@ -36,12 +39,17 @@ resource "aws_subnet" "subnet_pub1" {
   availability_zone = "us-east-1a"
   tags {
     name = "subnet_pub1"
+    Owner = "lucas.azevedo"
   }
 }
 
 resource "aws_route_table_association" "subnet_pub1" {
   subnet_id = "${aws_subnet.subnet_pub1.id}"
   route_table_id = "${aws_route_table.subnet_pub1.id}"
+  tags {
+    name = "rtsubnet_pub1"
+    Owner = "lucas.azevedo"
+  }
 }
 
 resource "aws_subnet" "subnet_priv1" {
@@ -50,6 +58,7 @@ resource "aws_subnet" "subnet_priv1" {
   availability_zone = "us-east-1a"
   tags {
     name = "subnet_priv1"
+    Owner = "lucas.azevedo"
   }
 }
 
@@ -59,6 +68,10 @@ resource "aws_instance" "ec2_subnet_pub1" {
   vpc_security_group_ids  = ["${aws_security_group.ssh_only.id}"]
   subnet_id = "${aws_subnet.subnet_pub1.id}"
   associate_public_ip_address = "true"
+  tags {
+    name = "ec2_subnet_pub1"
+    Owner = "lucas.azevedo"
+  }
 }
 
 resource "aws_instance" "ec2_subnet_priv1" {
@@ -67,6 +80,10 @@ resource "aws_instance" "ec2_subnet_priv1" {
   vpc_security_group_ids  = ["${aws_security_group.ssh_only.id}"]
   subnet_id = "${aws_subnet.subnet_priv1.id}"
   associate_public_ip_address = "false"
+  tags {
+    name = "ec2_subnet_priv1"
+    Owner = "lucas.azevedo"
+  }
 }
 
 resource "aws_security_group" "ssh_only" {
@@ -87,6 +104,7 @@ resource "aws_security_group" "ssh_only" {
     cidr_blocks = ["0.0.0.0/0"]
   }
   tags {
-    name= "ssh_only"
+    name = "ssh_only"
+    Owner = "lucas.azevedo"
   }
 }
